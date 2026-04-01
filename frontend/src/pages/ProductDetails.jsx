@@ -20,15 +20,17 @@ const ProductDetails = () => {
     }
   }, [dispatch, id]);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!product?._id) return;
 
-    dispatch(
+    const res = await dispatch(
       addToCartAPI({
         productId: product._id,
         quantity: 1,
       })
     );
+
+    console.log("Cart response:", res.payload);
 
     toast.success("Added to cart 🛒");
   };
@@ -58,14 +60,12 @@ const ProductDetails = () => {
       <div className="p-6 bg-gray-100 min-h-screen">
         <div className="bg-white p-6 rounded-xl shadow flex flex-col md:flex-row gap-8">
           
-          {/* Image */}
           <img
             src={product.image || "https://via.placeholder.com/300"}
             alt={product.name}
             className="w-full md:w-1/2 h-80 object-cover rounded"
           />
 
-          {/* Details */}
           <div className="flex-1">
             <h1 className="text-2xl font-bold">{product.name}</h1>
 
