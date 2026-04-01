@@ -8,7 +8,7 @@ import Input from "../components/Input";
 
 const Login = () => {
   const [data, setData] = useState({ email: "", password: "" });
-  const [loading, setLoading] = useState(false); // UI only
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -26,10 +26,15 @@ const Login = () => {
       const res = await axiosInstance.post("/auth/login", data);
 
       if (!res?.data?.token) {
-        return toast.error("Invalid response from server");
+        return toast.error("Token not received");
       }
 
+      /* SAVE TOKEN FIRST */
+      localStorage.setItem("token", res.data.token);
+
+      /* THEN UPDATE REDUX */
       dispatch(loginSuccess(res.data));
+
       toast.success("Login successful 👋");
 
       navigate("/");
@@ -41,18 +46,12 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-900 via-gray-900 to-black px-4">
-      <div className="w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl rounded-2xl p-8 transition-all duration-300">
-
-        {/* Heading */}
-        <h2 className="text-3xl font-bold text-center text-white mb-2">
-          Sign in to your account
+    <div className="flex items-center justify-center min-h-screen bg-gray-900 px-4">
+      <div className="w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl rounded-2xl p-8">
+        <h2 className="text-3xl font-bold text-center text-white mb-6">
+          Login
         </h2>
-        <p className="text-center text-gray-400 text-sm mb-6">
-        
-        </p>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
           <Input
             type="email"
@@ -72,26 +71,14 @@ const Login = () => {
             }
           />
 
-          {/* Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 rounded-xl font-semibold shadow-lg hover:shadow-blue-500/30 hover:scale-[1.02] active:scale-95 transition-all duration-300 disabled:opacity-70"
+            className="w-full bg-blue-600 text-white py-3 rounded-lg"
           >
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
-
-        {/* Footer */}
-        <p className="text-center text-sm text-gray-300 mt-6">
-          Don’t have an account?{" "}
-          <span
-            className="text-blue-400 cursor-pointer hover:underline hover:text-blue-300 transition"
-            onClick={() => navigate("/register")}
-          >
-            Register
-          </span>
-        </p>
       </div>
     </div>
   );
