@@ -2,12 +2,16 @@ import { useState } from "react";
 import axiosInstance from "../api/axiosInstance";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../features/auth/authSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import Input from "../components/Input";
 
 const Login = () => {
-  const [data, setData] = useState({ email: "", password: "" });
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+  });
+
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
@@ -25,20 +29,24 @@ const Login = () => {
 
       const res = await axiosInstance.post("/auth/login", data);
 
+      console.log("LOGIN RESPONSE:", res.data);
+
       if (!res?.data?.token) {
         return toast.error("Token not received");
       }
 
-      /* SAVE TOKEN FIRST */
+      /* SAVE TOKEN */
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
 
-      /* THEN UPDATE REDUX */
+      /* UPDATE REDUX */
       dispatch(loginSuccess(res.data));
 
       toast.success("Login successful 👋");
 
       navigate("/");
     } catch (error) {
+      console.log(error);
       toast.error(error.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
@@ -74,11 +82,18 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition"
           >
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
+
+        <p className="text-center text-gray-300 mt-4">
+          Don't have an account?{" "}
+          <Link to="/register" className="text-blue-400">
+            Register
+          </Link>
+        </p>
       </div>
     </div>
   );
