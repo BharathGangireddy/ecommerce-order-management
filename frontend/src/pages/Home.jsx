@@ -1,7 +1,7 @@
 import Layout from "../components/Layout.jsx";
 import Hero from "../components/Hero.jsx";
 import Categories from "../components/Categories.jsx";
-//import DealsSection from "../components/DealsSection.jsx";
+import DealsSection from "../components/DealsSection.jsx";
 import FeaturedProducts from "../components/FeaturedProducts.jsx";
 import ProductCard from "../components/ProductCard.jsx";
 
@@ -21,7 +21,7 @@ const Home = () => {
     <Layout>
       <Hero />
       <Categories />
-      {/* <DealsSection /> */}
+      <DealsSection />
       <FeaturedProducts products={products} />
 
       <div className="py-10">

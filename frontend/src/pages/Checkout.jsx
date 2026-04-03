@@ -21,7 +21,7 @@ const Checkout = () => {
       // 1️⃣ Create Razorpay Order from backend
       const { data: order } = await axiosInstance.post(
         "/payment/create-order",
-        { amount: total }
+        { amount: total } 
       );
 
       console.log("Razorpay Order Response:", order);

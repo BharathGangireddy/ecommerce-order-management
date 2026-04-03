@@ -1,24 +1,24 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../api/axiosInstance";
 
-/* ================================
+/* =========================
    FETCH ALL PRODUCTS
-================================ */
+========================= */
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
   async (_, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get("/products");
-      return res.data.products || [];
+      return res.data.products;
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Error");
+      return rejectWithValue(error.response?.data);
     }
-  },
+  }
 );
 
-/* ================================
+/* =========================
    FETCH SINGLE PRODUCT
-================================ */
+========================= */
 export const fetchProductById = createAsyncThunk(
   "products/fetchProductById",
   async (id, { rejectWithValue }) => {
@@ -26,27 +26,21 @@ export const fetchProductById = createAsyncThunk(
       const res = await axiosInstance.get(`/products/${id}`);
       return res.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Error");
+      return rejectWithValue(error.response?.data);
     }
-  },
+  }
 );
 
-/* ================================
-   SLICE
-================================ */
 const productSlice = createSlice({
   name: "products",
   initialState: {
     list: [],
-    product: null, // 🔥 IMPORTANT (for ProductDetails)
+    product: null,
     loading: false,
-    error: null,
   },
-
+  reducers: {},
   extraReducers: (builder) => {
     builder
-
-      /* FETCH ALL */
       .addCase(fetchProducts.pending, (state) => {
         state.loading = true;
       })
@@ -54,22 +48,11 @@ const productSlice = createSlice({
         state.loading = false;
         state.list = action.payload;
       })
-      .addCase(fetchProducts.rejected, (state, action) => {
+      .addCase(fetchProducts.rejected, (state) => {
         state.loading = false;
-        state.error = action.payload;
-      })
-
-      /* FETCH ONE */
-      .addCase(fetchProductById.pending, (state) => {
-        state.loading = true;
       })
       .addCase(fetchProductById.fulfilled, (state, action) => {
-        state.loading = false;
         state.product = action.payload;
-      })
-      .addCase(fetchProductById.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
       });
   },
 });
