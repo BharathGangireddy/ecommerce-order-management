@@ -1,5 +1,5 @@
-import Layout from "../components/Layout";
 import { useSelector } from "react-redux";
+import Layout from "../components/Layout";
 import ProductCard from "../components/ProductCard";
 
 const Wishlist = () => {
@@ -8,13 +8,13 @@ const Wishlist = () => {
   return (
     <Layout>
       <h1 className="text-2xl font-bold mb-6">
-        Wishlist ❤️
+        Wishlist
       </h1>
 
       {items.length === 0 ? (
         <p>No items in wishlist</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-4 gap-6">
           {items.map((product) => (
             <ProductCard key={product._id} product={product} />
           ))}
