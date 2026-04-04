@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-/* PAGES */
+/* USER PAGES */
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import Home from "./pages/Home.jsx";
@@ -11,10 +11,13 @@ import SearchResults from "./pages/SearchResults.jsx";
 import Wishlist from "./pages/Wishlist.jsx";
 import Orders from "./pages/Orders.jsx";
 
-/* ADMIN */
+/* ADMIN PAGES */
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import AdminProducts from "./pages/admin/AdminProducts.jsx";
 import AddProduct from "./pages/admin/AddProducts.jsx";
+import EditProduct from "./pages/admin/EditProduct.jsx";
+import AdminOrders from "./pages/admin/AdminOrders.jsx";
+
 /* COMPONENTS */
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
@@ -22,11 +25,11 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* PUBLIC */}
+        {/* PUBLIC ROUTES */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* USER */}
+        {/* USER ROUTES */}
         <Route
           path="/"
           element={
@@ -84,7 +87,7 @@ function App() {
           }
         />
 
-        {/* ADMIN */}
+        {/* ADMIN ROUTES */}
         <Route
           path="/admin"
           element={
@@ -106,6 +109,22 @@ function App() {
           element={
             <ProtectedRoute>
               <AddProduct />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/edit-product/:id"
+          element={
+            <ProtectedRoute>
+              <EditProduct />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/orders"
+          element={
+            <ProtectedRoute>
+              <AdminOrders />
             </ProtectedRoute>
           }
         />
