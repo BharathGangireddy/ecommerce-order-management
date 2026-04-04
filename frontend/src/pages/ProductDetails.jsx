@@ -1,96 +1,148 @@
-import { useEffect } from "react";
+// FE-EPIC-02 Product, Cart and Checkout Experience Enhancement
+
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProductById } from "../features/products/productSlice";
+import {
+  fetchProductById,
+  clearProduct,
+} from "../features/products/productSlice";
 import { addToCartAPI } from "../features/cart/cartSlice";
-import { useParams } from "react-router-dom";
-import Navbar from "../components/Navbar";
+import { useParams, useNavigate } from "react-router-dom";
+import Layout from "../components/Layout";
 import toast from "react-hot-toast";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { product, loading } = useSelector(
     (state) => state.products || {}
   );
 
+  const [quantity, setQuantity] = useState(1);
+
+  /* LOAD PRODUCT */
   useEffect(() => {
     if (id) {
+      dispatch(clearProduct());
       dispatch(fetchProductById(id));
     }
   }, [dispatch, id]);
 
+  /* ADD TO CART */
   const handleAddToCart = async () => {
     if (!product?._id) return;
 
-    const res = await dispatch(
+    await dispatch(
       addToCartAPI({
         productId: product._id,
-        quantity: 1,
+        quantity,
       })
     );
-
-    console.log("Cart response:", res.payload);
 
     toast.success("Added to cart 🛒");
   };
 
+  /* BUY NOW */
+  const handleBuyNow = async () => {
+    if (!product?._id) return;
+
+    await dispatch(
+      addToCartAPI({
+        productId: product._id,
+        quantity,
+      })
+    );
+
+    navigate("/cart");
+  };
+
   if (loading) {
     return (
-      <>
-        <Navbar />
+      <Layout>
         <div className="p-6">Loading...</div>
-      </>
+      </Layout>
     );
   }
 
   if (!product) {
     return (
-      <>
-        <Navbar />
+      <Layout>
         <div className="p-6">Product not found</div>
-      </>
+      </Layout>
     );
   }
 
   return (
-    <>
-      <Navbar />
+    <Layout>
+      <div className="bg-white p-6 rounded-xl shadow grid md:grid-cols-2 gap-10">
+        
+        {/* IMAGE */}
+        <img
+          src={product.image || "https://via.placeholder.com/400"}
+          alt={product.name}
+          className="w-full h-96 object-cover rounded-xl"
+        />
 
-      <div className="p-6 bg-gray-100 min-h-screen">
-        <div className="bg-white p-6 rounded-xl shadow flex flex-col md:flex-row gap-8">
-          
-          <img
-            src={product.image || "https://via.placeholder.com/300"}
-            alt={product.name}
-            className="w-full md:w-1/2 h-80 object-cover rounded"
-          />
+        {/* DETAILS */}
+        <div>
+          <h1 className="text-3xl font-bold">
+            {product.name}
+          </h1>
 
-          <div className="flex-1">
-            <h1 className="text-2xl font-bold">{product.name}</h1>
+          <p className="text-gray-500 mt-3">
+            {product.description || "No description available"}
+          </p>
 
-            <p className="text-gray-600 mt-2">
-              {product.description || "No description available"}
-            </p>
+          <h2 className="text-2xl font-semibold mt-4">
+            ₹{product.price}
+          </h2>
 
-            <h2 className="text-xl font-semibold mt-4">
-              ₹{product.price}
-            </h2>
+          <p className="mt-2">
+            Stock: {product.stock || "Available"}
+          </p>
 
-            <p className="mt-2">
-              Stock: {product.stock || "Available"}
-            </p>
+          {/* QUANTITY */}
+          <div className="flex items-center gap-3 mt-4">
+            <button
+              className="px-3 py-1 bg-gray-200 rounded"
+              onClick={() =>
+                setQuantity(Math.max(1, quantity - 1))
+              }
+            >
+              -
+            </button>
+
+            <span>{quantity}</span>
 
             <button
+              className="px-3 py-1 bg-gray-200 rounded"
+              onClick={() => setQuantity(quantity + 1)}
+            >
+              +
+            </button>
+          </div>
+
+          {/* BUTTONS */}
+          <div className="flex gap-4 mt-6">
+            <button
               onClick={handleAddToCart}
-              className="mt-6 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg"
             >
               Add to Cart
+            </button>
+
+            <button
+              onClick={handleBuyNow}
+              className="bg-green-600 text-white px-6 py-3 rounded-lg"
+            >
+              Buy Now
             </button>
           </div>
         </div>
       </div>
-    </>
+    </Layout>
   );
 };
 

@@ -1,10 +1,14 @@
 import { useNavigate } from "react-router-dom";
+import WishlistButton from "./WishlistButton";
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition p-4">
+    <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition p-4 relative">
+      
+      <WishlistButton product={product} />
+
       <img
         src={product.image}
         className="h-48 w-full object-cover rounded-lg"
